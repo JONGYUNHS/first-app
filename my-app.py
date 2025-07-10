@@ -1,23 +1,24 @@
+# 기본 세팅
 import streamlit as st 
 import pandas as pd
 import os
 from datetime import datetime
 
 
-# 페이지 세팅
+# 1) 페이지 세팅
 st.set_page_config(
     page_title="간단 설문조사",
     page_icon="📝" ,
     layout="centered"
-)
+)   
 
 st.title("📝 우리 동네 거리 설문조사")
 st.write("""
 이 설문은 **우리 동네 거리**(street)에 대해 여러분의 생각을 모으기 위한 것입니다.
-""")
+""")    
 
 
-# 항목
+# 2) 설문 항목
 with st.form("survey_form"):
     name = st.text_input("이름을 입력하세요")
     street = st.selectbox(
@@ -26,16 +27,20 @@ with st.form("survey_form"):
     )
     cleanliness = st.slider(
         "해당 거리가 얼마나 깨끗하다고 느끼시나요 (1 매우 불만족 ~ 5 매우 만족)",
-            min_value=1, max_value=5, value=3
+        min_value=1, max_value=5, value=3   
     )
-    safety = st.radio("해당 거리를 얼마나 안전하다고 느끼나요?",
-                      options=[1,2,3,4,5], index=2, format_func=lambda x: f"{x}점"
+    safety = st.radio(
+        "해당 거리를 얼마나 안전하다고 느끼나요?",
+        options=[1,2,3,4,5], index=2, format_func=lambda x: f"{x}점"
     )
-    comments = st.text_area("추가로 하고 싶은 말이 있으면 적어주세요 (선택사항)")
-    submitted = st.form_submit_button("제출하기")
+    comments = st.text_area(
+        "추가로 하고 싶은 말이 있으면 적어주세요 (선택사항)"
+    )
+    submitted = st.form_submit_button("제출하기"
+    )
 
 
-# 응답 저장
+# 3) 응답 저장
 
 DATA_PATH = "data/responses.csv"
 os.makedirs("data", exist_ok=True)
@@ -56,7 +61,7 @@ if submitted:
         df.to_csv(DATA_PATH, index=False, encoding="utf-8-sig")
     else:
         df = pd.read_csv(DATA_PATH)
-        df = df.concat([df, pd.DataFrame([new_row])], ignore_index=True)
+        df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
         df.to_csv(DATA_PATH, index=False, encoding="utf-8-sig")
 
 st.success("설문조사가 제출되었습니다! 감사합니다 😊")
